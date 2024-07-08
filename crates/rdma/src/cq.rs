@@ -1,4 +1,4 @@
-use crate::bindings as C;
+use crate::{bindings as C, wc};
 use crate::cc::CompChannel;
 use crate::ctx::Context;
 use crate::error::{create_resource, from_errno};
@@ -37,6 +37,7 @@ impl CompletionQueue {
 
             let mut cq_attr: C::ibv_cq_init_attr_ex = mem::zeroed();
             cq_attr.cqe = options.cqe.numeric_cast();
+            cq_attr.wc_flags = options.wc_flags;
 
             if let Some(ref cc) = options.channel {
                 cq_attr.channel = cc.ffi_ptr();
@@ -183,6 +184,7 @@ pub struct CompletionQueueOptions {
     cqe: usize,
     user_data: usize,
     channel: Option<CompChannel>,
+    wc_flags: u64
 }
 
 impl CompletionQueueOptions {
@@ -199,6 +201,11 @@ impl CompletionQueueOptions {
     #[inline]
     pub fn channel(&mut self, cc: &CompChannel) -> &mut Self {
         self.channel = Some(cc.clone());
+        self
+    }
+    
+    pub fn wc_flags(&mut self, wc_flags: u64) -> &mut Self{
+        self.wc_flags = wc_flags;
         self
     }
 }

@@ -28,14 +28,14 @@ fn main() {
     {
         let lib_name = "libibverbs";
         let pkg_name = "libibverbs-dev";
-        let version = "1.14.41";
+        let version = "1.14.39";
         link_rdma_core(lib_name, pkg_name, version, &mut include_paths);
     }
 
     {
         let lib_name = "librdmacm";
         let pkg_name = "librdmacm-dev";
-        let version = "1.3.41";
+        let version = "1.3.39";
         link_rdma_core(lib_name, pkg_name, version, &mut include_paths);
     }
 

@@ -30,4 +30,10 @@ impl DeviceAttr {
     pub fn physical_port_count(&self) -> u8 {
         self.0.orig_attr.phys_port_cnt
     }
+
+    #[inline]
+    #[must_use]
+    pub fn completion_timestamp_mask(&self) -> u64{
+        self.0.completion_timestamp_mask
+    }
 }

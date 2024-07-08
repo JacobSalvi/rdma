@@ -1,5 +1,5 @@
 use crate::ah::AddressHandleOptions;
-use crate::bindings as C;
+use crate::bindings::{self as C, ibv_qp_create_send_ops_flags, ibv_qp_init_attr_mask};
 use crate::cq::CompletionQueue;
 use crate::ctx::Context;
 use crate::device::Mtu;
@@ -298,6 +298,18 @@ impl QueuePairOptions {
         }
         self.attr.srq = srq.ffi_ptr();
         self.srq = Some(srq.clone());
+        self
+    }
+
+    #[inline]
+    pub fn comp_mask(&mut self, mask: ibv_qp_init_attr_mask) -> &mut Self{
+        self.attr.comp_mask = mask;
+        self
+    }
+
+    #[inline]
+    pub fn send_ops_flags(&mut self, flags: ibv_qp_create_send_ops_flags) -> &mut Self{
+        self.attr.send_ops_flags = u64::from(flags);
         self
     }
 }
