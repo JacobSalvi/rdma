@@ -9,16 +9,22 @@ use std::ptr::NonNull;
 
 
 
-struct Owner {
+pub struct Owner {
     qp_ex: NonNull<C::ibv_qp_ex>,
 
-    _pd: Option<ProtectionDomain>,
+    pd: Option<ProtectionDomain>,
     send_cq: Option<CompletionQueue>,
     recv_cq: Option<CompletionQueue>,
-    _srq: Option<SharedReceiveQueue>,
+    srq: Option<SharedReceiveQueue>,
 }
 
 impl Owner {
+
+    #[must_use] 
+    pub fn new(qp_ex: NonNull<C::ibv_qp_ex>, pd: Option<ProtectionDomain>,  send_cq: Option<CompletionQueue>,  
+        recv_cq: Option<CompletionQueue>, srq: Option<SharedReceiveQueue>) -> Self{
+        Owner {qp_ex, pd, send_cq, recv_cq, srq}
+    }
     fn ffi_ptr(&self) -> *mut C::ibv_qp_ex {
         self.qp_ex.as_ptr()
     }
@@ -36,27 +42,8 @@ impl QueuePairEx {
         self.0.ffi_ptr()
     }
 
-    #[inline]
-    pub fn create(ctx: &Context, mut options: QueuePairOptions) -> io::Result<Self> {
-        // SAFETY: ffi
-        let owner = unsafe {
-            let context = ctx.ffi_ptr();
-            let qp_attr = &mut options.attr;
-
-            let qp_ex = create_resource(
-                || C::ibv_create_qp_ex(context, qp_attr),
-                || "failed to create queue pair",
-            )?;
-
-            Arc::new(Owner {
-                qp_ex,
-                _pd: options.pd,
-                send_cq: options.send_cq,
-                recv_cq: options.recv_cq,
-                _srq: options.srq,
-            })
-        };
-        Ok(Self(owner))
+    pub fn new(owner: Arc<Owner>) -> Self{
+        QueuePairEx(owner)
     }
 
 }

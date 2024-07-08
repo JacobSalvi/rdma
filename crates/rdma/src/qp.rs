@@ -6,6 +6,8 @@ use crate::device::Mtu;
 use crate::error::{create_resource, from_errno, get_errno, set_errno};
 use crate::mr::AccessFlags;
 use crate::pd::ProtectionDomain;
+use crate::qp_ex::QueuePairEx;
+use crate::qp_ex;
 use crate::srq::SharedReceiveQueue;
 use crate::utils::{bool_to_c_int, c_uint_to_u32, ptr_as_mut, u32_as_c_uint};
 use crate::utils::{usize_to_void_ptr, void_ptr_to_usize};
@@ -150,6 +152,18 @@ impl QueuePair {
     #[must_use]
     pub fn recv_cq(&self) -> Option<&CompletionQueue> {
         self.0.recv_cq.as_ref()
+    }
+
+
+
+    pub fn to_qp_ex(&self) -> io::Result<QueuePairEx> {
+        let owner = unsafe {
+            let qp_ex = create_resource(|| C::ibv_qp_to_qp_ex(self.0.qp.as_ptr()), 
+                || "Failed to create qp_ex")?;
+            
+            Arc::new(qp_ex::Owner::new(qp_ex, self.0._pd.clone(), self.0.send_cq.clone(), self.0.recv_cq.clone(), self.0._srq.clone()))
+        };
+       Ok(QueuePairEx::new(owner)) 
     }
 }
 
