@@ -85,3 +85,4 @@ pub mod qp_ex;
 pub mod srq;
 pub mod wc;
 pub mod wr;
+pub mod poll_cq_attr;

@@ -2,6 +2,7 @@ use crate::bindings as C;
 use crate::cc::CompChannel;
 use crate::ctx::Context;
 use crate::error::{create_resource, from_errno};
+use crate::poll_cq_attr::PollCQAttr;
 use crate::utils::{bool_to_c_int, ptr_as_mut};
 use crate::wc::WorkCompletion;
 
