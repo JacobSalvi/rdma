@@ -97,6 +97,20 @@ impl Gid {
         // SAFETY: POD
         unsafe { self.0.global.interface_id }
     }
+
+    #[inline]
+    pub fn query(ctx: &Context, port_num: u8, gid_index: i32) -> io::Result<Self> {
+        unsafe {
+            let mut gid = MaybeUninit::<Self>::uninit();
+            let context = ctx.ffi_ptr();
+            let entry = gid.as_mut_ptr().cast::<C::ibv_gid>();
+            let ret = C::ibv_query_gid(context, port_num, gid_index, entry);
+            if ret != 0 {
+                return Err(custom_error("failed to query gid entry"));
+            }
+            Ok(gid.assume_init())
+        }
+    }
 }
 
 impl PartialEq for Gid {
