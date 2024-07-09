@@ -1,4 +1,4 @@
-use crate::{bindings as C, wc};
+use crate::bindings as C;
 use crate::cc::CompChannel;
 use crate::ctx::Context;
 use crate::error::{create_resource, from_errno};
@@ -88,6 +88,32 @@ impl CompletionQueue {
     #[must_use]
     pub fn user_data(&self) -> usize {
         self.0.user_data
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn status(&self) -> u32{
+        let cq = self.ffi_ptr();
+        unsafe{
+            (*cq).status
+        }
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn wr_id(&self) -> u64{
+        let cq = self.ffi_ptr();
+        unsafe{
+            (*cq).wr_id
+        }
+    }
+
+    #[must_use]
+    pub fn read_completion_ts(&self) -> u64 {
+        let cq = self.ffi_ptr();
+        unsafe{
+            C::ibv_wc_read_completion_ts(cq)
+        } 
     }
 
     fn req_notify(&self, solicited_only: bool) -> io::Result<()> {

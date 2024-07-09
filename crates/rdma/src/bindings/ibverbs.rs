@@ -176,6 +176,10 @@ pub unsafe fn ibv_create_qp_ex(
     (op)(context, qp_attr)
 }
 
+pub unsafe fn ibv_wc_read_completion_ts(cq: *mut ibv_cq_ex) -> u64{
+    (*cq).read_completion_ts.unwrap()(cq)
+}
+
 #[inline]
 pub unsafe fn ibv_req_notify_cq(cq: *mut ibv_cq, solicited_only: c_int) -> c_int {
     let ctx: *mut ibv_context = (*cq).context;
