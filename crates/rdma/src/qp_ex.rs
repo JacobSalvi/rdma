@@ -19,6 +19,10 @@ pub struct Owner {
     srq: Option<SharedReceiveQueue>,
 }
 
+unsafe impl Send for Owner{}
+
+unsafe impl Sync for Owner{}
+
 impl Owner {
 
     #[must_use] 
