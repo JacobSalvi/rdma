@@ -442,6 +442,25 @@ pub unsafe fn ibv_wr_abort(qp: *mut ibv_qp_ex) {
     (op)(qp);
 }
 
+
+#[inline]
+pub unsafe fn ibv_start_poll(cq: *mut ibv_cq_ex, attr: *mut ibv_poll_cq_attr) -> c_int{
+    let op = (*cq).start_poll.unwrap_unchecked();
+    return (op)(cq, attr);
+}
+
+#[inline]
+pub unsafe fn ibv_end_poll(cq: *mut ibv_cq_ex){
+    let op = (*cq).end_poll.unwrap_unchecked();
+    (op)(cq)
+}
+
+#[inline]
+pub unsafe fn ibv_next_poll(cq: *mut ibv_cq_ex) -> c_int{
+    let op = (*cq).next_poll.unwrap_unchecked();
+    (op)(cq)
+}
+
 #[inline]
 pub unsafe fn ibv_create_srq_ex(
     context: *mut ibv_context,

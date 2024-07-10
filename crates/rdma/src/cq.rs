@@ -164,6 +164,27 @@ impl CompletionQueue {
             Ok(slice::from_raw_parts_mut(data, len))
         }
     }
+    
+    #[must_use]
+    pub fn start_poll(&self, attr: &PollCQAttr) -> i32{
+        unsafe{
+            let cq = self.ffi_ptr();
+            C::ibv_start_poll(cq, attr.ffi_ptr())
+        }
+    }
+
+    pub fn end_poll(&self){
+        unsafe{
+            C::ibv_end_poll(self.ffi_ptr());
+        }
+    }
+
+    #[must_use]
+    pub fn next_poll(&self) -> i32{
+        unsafe{
+            C::ibv_next_poll(self.ffi_ptr())
+        }
+    } 
 }
 
 pub(crate) struct Owner {
