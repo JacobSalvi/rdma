@@ -166,7 +166,7 @@ impl CompletionQueue {
     }
     
     #[must_use]
-    pub fn start_poll(&self, attr: &PollCQAttr) -> i32{
+    pub fn start_poll(&self, attr: &mut PollCQAttr) -> i32{
         unsafe{
             let cq = self.ffi_ptr();
             C::ibv_start_poll(cq, attr.ffi_ptr())
