@@ -6,9 +6,9 @@ use crate::bindings as C;
 
 
 #[derive(Clone)]
-pub struct PollCQAttr(Arc<Owner>);
-
-
+pub struct PollCQAttr{
+    attr: NonNull<C::ibv_poll_cq_attr>
+}
 
 impl PollCQAttr{
     #[must_use]
@@ -17,14 +17,14 @@ impl PollCQAttr{
     }
 
     pub(crate) fn ffi_ptr(&self) -> *mut C::ibv_poll_cq_attr {
-        self.0.ffi_ptr()
+        self.attr.as_ptr()
     }    
 }
 
 
 impl Default for PollCQAttr{
     fn default() -> Self{
-        Self(unsafe{mem::zeroed()})
+        Self{attr: unsafe{mem::zeroed()}}
     }
         
 }
