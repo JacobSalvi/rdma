@@ -161,7 +161,7 @@ impl QueuePair {
             let qp_ex = create_resource(|| C::ibv_qp_to_qp_ex(self.0.qp.as_ptr()), 
                 || "Failed to create qp_ex")?;
             
-            Arc::new(qp_ex::Owner::new(qp_ex, self.0._pd.clone(), self.0.send_cq.clone(), self.0.recv_cq.clone(), self.0._srq.clone()))
+            Arc::new(qp_ex::Owner::new(qp_ex))
         };
        Ok(QueuePairEx::new(owner)) 
     }

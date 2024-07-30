@@ -1,10 +1,7 @@
 use std::io;
 use std::sync::Arc;
 use crate::bindings::{self as C };
-use crate::cq::CompletionQueue;
 use crate::error::custom_error;
-use crate::pd::ProtectionDomain;
-use crate::srq::SharedReceiveQueue;
 
 use std::ptr::NonNull;
 
@@ -13,10 +10,6 @@ use std::ptr::NonNull;
 pub struct Owner {
     qp_ex: NonNull<C::ibv_qp_ex>,
 
-    pd: Option<ProtectionDomain>,
-    send_cq: Option<CompletionQueue>,
-    recv_cq: Option<CompletionQueue>,
-    srq: Option<SharedReceiveQueue>,
 }
 
 unsafe impl Send for Owner{}
@@ -26,9 +19,8 @@ unsafe impl Sync for Owner{}
 impl Owner {
 
     #[must_use] 
-    pub fn new(qp_ex: NonNull<C::ibv_qp_ex>, pd: Option<ProtectionDomain>,  send_cq: Option<CompletionQueue>,  
-        recv_cq: Option<CompletionQueue>, srq: Option<SharedReceiveQueue>) -> Self{
-        Owner {qp_ex, pd, send_cq, recv_cq, srq}
+    pub fn new(qp_ex: NonNull<C::ibv_qp_ex>) -> Self{
+        Owner {qp_ex}
     }
     fn ffi_ptr(&self) -> *mut C::ibv_qp_ex {
         self.qp_ex.as_ptr()

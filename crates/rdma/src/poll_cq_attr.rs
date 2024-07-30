@@ -1,5 +1,4 @@
 use std::mem;
-use std::ptr::NonNull;
 use crate::bindings as C;
 
 
@@ -27,15 +26,4 @@ impl Default for PollCQAttr{
     }
         
 }
-
-pub(crate) struct Owner {
-    cq: NonNull<C::ibv_poll_cq_attr>,
-}
-
-impl Owner {
-    pub(crate) fn ffi_ptr(&self) -> *mut C::ibv_poll_cq_attr {
-        self.cq.as_ptr()
-    }
-}
-
 
